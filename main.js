@@ -54,25 +54,63 @@ const pAequorFactory = (specimenNum, dna) => {
       } else {
         return false;
       }
+    },
+    complementStrand() {
+      complementArr = []
+      for (let char of this.dna) {
+        switch (char) {
+          case 'A':
+            complementArr.push('T');
+            break;
+          case 'T':
+            complementArr.push('A');
+            break;
+          case 'C':
+            complementArr.push('G');
+            break;
+          case 'G':
+            complementArr.push('C');
+            break;
+          default:
+            console.log('error');
+        }
+      }
+      return complementArr;
     }
   }
 }
 
-let pInstances = []
+// Create 30 Instances That Will Likely Survive
+const pInstances = []
+const pUnique = []
 let specimenCount = 0
 do {
   const specimenObj = pAequorFactory(specimenCount, mockUpStrand());
-  const willSurvive = specimenObj.willLikelySurvive()
+  const willSurvive = specimenObj.willLikelySurvive();
+  const strSpec = specimenObj.dna.join('')
+  console.log(strSpec)
   if (willSurvive) {
     pInstances.push(specimenObj.dna)
   }
 } while (pInstances.length < 30);
 
-console.log(pInstances.length)
+const twoMostRelated = () => {
 
+}
+// /*
 // Tests
-// const test = pAequorFactory(5, mockUpStrand());
-// const test2 = pAequorFactory(4, mockUpStrand());
+console.log(`DNA Instances w/High Survavibilty: ${pInstances.length}`)
 
-// console.log(test.compareDNA(test2.dna));
-// console.log(test.willLikelySurvive());
+console.log(`
+  Tests:
+  `)
+const test = pAequorFactory(5, mockUpStrand());
+const test2 = pAequorFactory(4, mockUpStrand());
+
+console.log(test.compareDNA(test2.dna));
+
+console.log(`DNA Strand: ${test.dna}`);
+console.log(`Complementary Strand: ${test.complementStrand()}`);
+
+console.log(`Will Likely Survive: ${test.willLikelySurvive()}`);
+// */
