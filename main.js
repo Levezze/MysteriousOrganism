@@ -39,7 +39,8 @@ const pAequorFactory = (specimenNum, dna) => {
           count ++;
         }
       }
-      return `specimen #1 and specimen #2 have ${Math.round(count / dnaLength * 100)}% DNA in common.`
+      // console.log(`Specimen #1 and specimen #2 have ${(count / dnaLength * 100).toFixed(2)}% DNA in common.`)
+      return (count / dnaLength * 100).toFixed(2);
     },
     // Survivability Likelyhood
     willLikelySurvive() {
@@ -78,9 +79,9 @@ const pAequorFactory = (specimenNum, dna) => {
       return complementArr;
     }
   }
-}
+};
 
-// Create 30 Instances That Will Likely Survive
+// Create 30 Unique Instances That Will Likely Survive
 const pInstances = []
 const pUnique = []
 let specimenCount = 0
@@ -88,29 +89,45 @@ do {
   const specimenObj = pAequorFactory(specimenCount, mockUpStrand());
   const willSurvive = specimenObj.willLikelySurvive();
   const strSpec = specimenObj.dna.join('')
-  console.log(strSpec)
   if (willSurvive) {
-    pInstances.push(specimenObj.dna)
+    if (!pUnique.includes(strSpec)) {
+      pInstances.push(specimenObj)
+      pUnique.push(strSpec)
+    }
   }
 } while (pInstances.length < 30);
 
-const twoMostRelated = () => {
+// Find The Two Most Related
+const twoMostRelated = (arr) => {
+  const comparisonArr = []
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length; j++) {
+      if (i !== j) {
+        const result = arr[i].compareDNA(arr[j].dna);
+        const obj = {i: i, j, compare: result};
+        comparisonArr.push(obj);
+      }
+    }
+  }
+  comparisonArr.sort((a, b) => b.compare - a.compare);
+  const mostRelated = comparisonArr[0];
+  console.log(`The two most related DNA instances are:
+    ${pInstances[mostRelated.i].dna},
+    ${pInstances[mostRelated.j].dna},
+    with a ${mostRelated.compare}% Match.`)
+};
 
-}
-// /*
 // Tests
-console.log(`DNA Instances w/High Survavibilty: ${pInstances.length}`)
+console.log(`Unique DNA Instances w/High Survavibilty: ${pInstances.length}`)
+twoMostRelated(pInstances);
 
 console.log(`
   Tests:
-  `)
+  `);
+
 const test = pAequorFactory(5, mockUpStrand());
 const test2 = pAequorFactory(4, mockUpStrand());
-
-console.log(test.compareDNA(test2.dna));
-
+test.compareDNA(test2.dna);
 console.log(`DNA Strand: ${test.dna}`);
 console.log(`Complementary Strand: ${test.complementStrand()}`);
-
 console.log(`Will Likely Survive: ${test.willLikelySurvive()}`);
-// */
